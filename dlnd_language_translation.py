@@ -10,7 +10,7 @@
 # 因为将整个英语语言内容翻译成法语需要大量训练时间，所以我们提供了一小部分的英语语料库。
 # 
 
-# In[1]:
+# In[4]:
 
 
 """
@@ -30,7 +30,7 @@ target_text = helper.load_data(target_path)
 # 研究 view_sentence_range，查看并熟悉该数据的不同部分。
 # 
 
-# In[2]:
+# In[5]:
 
 
 view_sentence_range = (0, 10)
@@ -72,7 +72,7 @@ print('\n'.join(target_text.split('\n')[view_sentence_range[0]:view_sentence_ran
 # 你可以使用 `source_vocab_to_int` 和 `target_vocab_to_int` 获得其他单词 id。
 # 
 
-# In[3]:
+# In[6]:
 
 
 def text_to_ids(source_text, target_text, source_vocab_to_int, target_vocab_to_int):
@@ -110,7 +110,7 @@ tests.test_text_to_ids(text_to_ids)
 # 运行以下代码单元，预处理所有数据，并保存到文件中。
 # 
 
-# In[4]:
+# In[7]:
 
 
 """
@@ -123,7 +123,7 @@ helper.preprocess_and_save_data(source_path, target_path, text_to_ids)
 # 
 # 这是你的第一个检查点。如果你什么时候决定再回到该记事本，或需要重新启动该记事本，可以从这里继续。预处理的数据已保存到磁盘上。
 
-# In[5]:
+# In[8]:
 
 
 """
@@ -140,7 +140,7 @@ import helper
 # 这一检查步骤，可以确保你使用的是正确版本的 TensorFlow，并且能够访问 GPU。
 # 
 
-# In[6]:
+# In[9]:
 
 
 """
@@ -185,7 +185,7 @@ else:
 # 在以下元祖（tuple）中返回占位符：（输入、目标、学习速率、保留率）
 # 
 
-# In[7]:
+# In[10]:
 
 
 def model_inputs():
@@ -210,7 +210,7 @@ tests.test_model_inputs(model_inputs)
 # 
 # 使用 TensorFlow 实现 `process_decoding_input`，以便删掉 `target_data` 中每个批次的最后一个单词 ID，并将 GO ID 放到每个批次的开头。
 
-# In[8]:
+# In[11]:
 
 
 def process_decoding_input(target_data, target_vocab_to_int, batch_size):
@@ -240,7 +240,7 @@ tests.test_process_decoding_input(process_decoding_input)
 # 
 # 实现 `encoding_layer()`，以使用 [`tf.nn.dynamic_rnn()`](https://www.tensorflow.org/api_docs/python/tf/nn/dynamic_rnn) 创建编码器 RNN 层级。
 
-# In[9]:
+# In[12]:
 
 
 def encoding_layer(rnn_inputs, rnn_size, num_layers, keep_prob):
@@ -273,7 +273,7 @@ tests.test_encoding_layer(encoding_layer)
 # 
 # 使用 [`tf.contrib.seq2seq.simple_decoder_fn_train()`](https://www.tensorflow.org/versions/r1.0/api_docs/python/tf/contrib/seq2seq/simple_decoder_fn_train) 和 [`tf.contrib.seq2seq.dynamic_rnn_decoder()`](https://www.tensorflow.org/versions/r1.0/api_docs/python/tf/contrib/seq2seq/dynamic_rnn_decoder) 创建训练分对数（training logits）。将 `output_fn` 应用到 [`tf.contrib.seq2seq.dynamic_rnn_decoder()`](https://www.tensorflow.org/versions/r1.0/api_docs/python/tf/contrib/seq2seq/dynamic_rnn_decoder) 输出上。
 
-# In[10]:
+# In[13]:
 
 
 def decoding_layer_train(encoder_state, dec_cell, dec_embed_input, sequence_length, decoding_scope,
@@ -310,7 +310,7 @@ tests.test_decoding_layer_train(decoding_layer_train)
 # 
 # 使用 [`tf.contrib.seq2seq.simple_decoder_fn_inference()`](https://www.tensorflow.org/versions/r1.0/api_docs/python/tf/contrib/seq2seq/simple_decoder_fn_inference) 和 [`tf.contrib.seq2seq.dynamic_rnn_decoder()`](https://www.tensorflow.org/versions/r1.0/api_docs/python/tf/contrib/seq2seq/dynamic_rnn_decoder) 创建推论分对数（inference logits）。
 
-# In[11]:
+# In[14]:
 
 
 def decoding_layer_infer(encoder_state, dec_cell, dec_embeddings, start_of_sequence_id, end_of_sequence_id,
@@ -359,7 +359,7 @@ tests.test_decoding_layer_infer(decoding_layer_infer)
 # 
 # 注意：你将需要使用 [tf.variable_scope](https://www.tensorflow.org/api_docs/python/tf/variable_scope) 在训练和推论分对数间分享变量。
 
-# In[12]:
+# In[15]:
 
 
 def decoding_layer(dec_embed_input, dec_embeddings, encoder_state, vocab_size, sequence_length, rnn_size,
@@ -425,7 +425,7 @@ tests.test_decoding_layer(decoding_layer)
 # - 向解码器的目标数据应用嵌入。
 # - 使用 `decoding_layer(dec_embed_input, dec_embeddings, encoder_state, vocab_size, sequence_length, rnn_size, num_layers, target_vocab_to_int, keep_prob)` 解码编码的输入数据。
 
-# In[13]:
+# In[16]:
 
 
 def seq2seq_model(input_data, target_data, keep_prob, batch_size, sequence_length, source_vocab_size, target_vocab_size,
@@ -483,7 +483,7 @@ tests.test_seq2seq_model(seq2seq_model)
 # - 将 `learning_rate` 设为训练速率。
 # - 将 `keep_probability` 设为丢弃保留率（Dropout keep probability）。
 
-# In[26]:
+# In[17]:
 
 
 # Number of Epochs
@@ -491,23 +491,23 @@ epochs = 10
 # Batch Size
 batch_size = 512
 # RNN Size
-rnn_size = 512
+rnn_size = 256
 # Number of Layers
 num_layers = 2
 # Embedding Size
-encoding_embedding_size = 32
-decoding_embedding_size = 32
+encoding_embedding_size = 256
+decoding_embedding_size = 256
 # Learning Rate
 learning_rate = 0.001
 # Dropout Keep Probability
-keep_probability = 0.5
+keep_probability = 0.8
 
 
 # ### 构建图表
 # 
 # 使用你实现的神经网络构建图表。
 
-# In[27]:
+# In[18]:
 
 
 """
@@ -548,7 +548,7 @@ with train_graph.as_default():
 # 
 # 利用预处理的数据训练神经网络。如果很难获得低损失值，请访问我们的论坛，看看其他人是否遇到了相同的问题。
 
-# In[28]:
+# In[19]:
 
 
 """
@@ -619,7 +619,7 @@ with tf.Session(graph=train_graph) as sess:
 # 
 # 保存 `batch_size` 和 `save_path` 参数以进行推论（for inference）。
 
-# In[29]:
+# In[20]:
 
 
 """
@@ -631,7 +631,7 @@ helper.save_params(save_path)
 
 # # 检查点
 
-# In[30]:
+# In[21]:
 
 
 """
@@ -654,7 +654,7 @@ load_path = helper.load_params()
 # - 使用 `vocab_to_int` 将单词转换为 id
 #  - 如果单词不在词汇表中，将其转换为`<UNK>` 单词 id
 
-# In[34]:
+# In[22]:
 
 
 def sentence_to_seq(sentence, vocab_to_int):
@@ -681,10 +681,10 @@ tests.test_sentence_to_seq(sentence_to_seq)
 # 
 # 将 `translate_sentence` 从英语翻译成法语。
 
-# In[40]:
+# In[23]:
 
 
-translate_sentence = 'what is your name.'
+translate_sentence = 'he saw a old yellow truck .'
 
 
 """
